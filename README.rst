@@ -44,6 +44,7 @@ Copy ``collectd_systemd.py`` to collectd Python plugin directory
         <Module collectd_systemd>
             Service sshd nginx postgresql
             Service httpd
+            ServiceStates ActiveState SubState
         </Module>
     </Plugin>
 
@@ -52,6 +53,7 @@ quotes::
 
     <Module collectd_systemd>
         Service "celery-bots" "gunicorn-data"
+        ServiceStates ActiveState
     </Module>
 
 Restart collectd daemon and open grafana web ui. Add a new graph with
@@ -72,9 +74,17 @@ Following configuration options are supported:
   multiple services with spaces. Multiple services lines can
   be specified when they will be concatinated.
 
-* ``Interval``: check interval. It's ok to keep the default (60 seconds)
+* ``ServiceStates``: which systemd states to track for the specified
+  services. This parameter is mandatory, failure to set one or more
+  ServiceState will result in the plugin silently passing on all data
+  collection. Supported settings correspond to systemd status fields:
+  ``ActiveState``, ``SubState``, and ``LoadState``.
 
-* ``Verbose``: enable verbose logging (off by default)
+* ``Interval``: check interval. If not set, the plugin will default
+  to an interval of 60 seconds. Acceptable values are positive integers.
+
+* ``Verbose``: whether or not to use verbose activity logging.
+  Acceptable values are ``true`` and ``false``. Defaults to ``false``.
 
 Running tests
 -------------
